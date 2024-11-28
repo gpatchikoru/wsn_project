@@ -1,16 +1,14 @@
 import numpy as np
 import random
 
-# Network Parameters
-xm, ym = 100, 100  # Field dimensions
-n = 100  # Number of nodes
-sinkx, sinky = 50, 50  # Sink coordinates
-Eo = 0.5  # Initial energy of nodes
-Eelec = 50 * 10**-9  # Energy for running circuitry
-Eamp = 100 * 10**-12  # Energy for amplification
-k = 2000  # Data packet size
+xm, ym = 100, 100
+n = 100
+sinkx, sinky = 50, 50
+Eo = 0.5
+Eelec = 50 * 10**-9
+Eamp = 100 * 10**-12
+k = 2000
 
-# Direct Protocol Simulation
 def run_direct():
     nodes = np.array([
         (i, random.randint(0, xm), random.randint(0, ym), Eo, 1, 0, 

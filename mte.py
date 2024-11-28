@@ -1,16 +1,14 @@
 import numpy as np
 import random
 
-# Network Parameters
-xm, ym = 100, 100  # Field dimensions
-n = 100  # Number of nodes
-sinkx, sinky = 50, 50  # Sink coordinates
-Eo = 0.5  # Initial energy of nodes
-Eelec = 50 * 10**-9  # Energy for running circuitry
-Eamp = 100 * 10**-12  # Energy for amplification
-k = 2000  # Data packet size
+xm, ym = 100, 100
+n = 100
+sinkx, sinky = 50, 50
+Eo = 0.5
+Eelec = 50 * 10**-9
+Eamp = 100 * 10**-12
+k = 2000
 
-# MTE Protocol Simulation
 def run_mte():
     nodes = np.array([
         (i, random.randint(0, xm), random.randint(0, ym), Eo, 1,
@@ -27,7 +25,6 @@ def run_mte():
     while np.sum(nodes['cond']) > 0:
         for node in nodes:
             if node['cond'] == 1:
-                # Find nearest neighbor
                 distances = []
                 for other_node in nodes:
                     if other_node['id'] != node['id'] and other_node['cond'] == 1:
@@ -37,17 +34,14 @@ def run_mte():
                 
                 if distances:
                     next_hop = min(distances, key=lambda x: x[0])[1]
-                    # Energy for transmission to next hop
                     dist_to_hop = np.sqrt((node['x'] - next_hop['x'])**2 + 
                                         (node['y'] - next_hop['y'])**2)
                     energy_spent = Eelec * k + Eamp * k * dist_to_hop**2
                     node['E'] -= energy_spent
                     
-                    # Energy for next hop to sink
                     energy_spent_next = Eelec * k + Eamp * k * next_hop['dts']**2
                     next_hop['E'] -= energy_spent_next
                 else:
-                    # Direct transmission to sink if no neighbors
                     energy_spent = Eelec * k + Eamp * k * node['dts']**2
                     node['E'] -= energy_spent
                 

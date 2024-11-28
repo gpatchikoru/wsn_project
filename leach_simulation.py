@@ -1,17 +1,15 @@
 import numpy as np
 import random
 
-# Network Parameters
-xm, ym = 100, 100  # Field dimensions
-n = 100  # Number of nodes
-sinkx, sinky = 50, 50  # Sink coordinates
-Eo = 0.5  # Initial energy of nodes
-Eelec = 50 * 10**-9  # Energy for running circuitry
-Eamp = 100 * 10**-12  # Energy for amplification
-k = 2000  # Data packet size
-p = 0.05  # Percentage of cluster heads
+xm, ym = 100, 100
+n = 100
+sinkx, sinky = 50, 50
+Eo = 0.5
+Eelec = 50 * 10**-9
+Eamp = 100 * 10**-12
+k = 2000
+p = 0.05
 
-# LEACH Protocol Simulation
 def run_leach():
     nodes = np.array([
         (i, random.randint(0, xm), random.randint(0, ym), Eo, 0, 0, 1, 0, 
@@ -27,13 +25,11 @@ def run_leach():
     rounds = 0
     while np.sum(nodes['cond']) > 0:
         cluster_heads = []
-        # Select cluster heads
         for node in nodes:
             if node['cond'] == 1 and random.uniform(0, 1) <= p:
                 node['role'] = 1
                 cluster_heads.append(node)
 
-        # Assign nodes to nearest cluster head
         for node in nodes:
             if node['cond'] == 1 and node['role'] == 0:
                 distances = [np.sqrt((node['x'] - ch['x'])**2 + (node['y'] - ch['y'])**2) for ch in cluster_heads]
@@ -44,7 +40,6 @@ def run_leach():
                     if node['E'] <= 0:
                         node['cond'] = 0
 
-        # Cluster head energy dissipation
         for ch in cluster_heads:
             if ch['cond'] == 1:
                 ch['E'] -= Eelec * k
@@ -53,8 +48,6 @@ def run_leach():
 
         results.append((rounds, np.sum(nodes['cond'])))
         rounds += 1
-        
-        # Reset roles for next round
         nodes['role'] = 0
         
     return results
